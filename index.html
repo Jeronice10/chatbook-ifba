@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatBook - Biblioteca IFBA</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c5aa0;
+            --secondary-color: #e63946;
+            --accent-color: #1d3557;
+            --light-color: #f1faee;
+            --text-color: #333;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --border-radius: 10px;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            padding: 25px 0;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo i {
+            font-size: 2.5rem;
+        }
+
+        .logo h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--light-color);
+            font-weight: 300;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .chat-section {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .chat-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 500px;
+        }
+
+        .chat-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 18px 25px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background-color: #f9f9f9;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 15px 20px;
+            border-radius: 20px;
+            line-height: 1.5;
+        }
+
+        .bot-message {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            align-self: flex-start;
+            border-top-left-radius: 5px;
+            position: relative;
+        }
+
+        .bot-message::before {
+            content: "ChatBook";
+            position: absolute;
+            top: -20px;
+            left: 0;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .user-message {
+            background-color: var(--primary-color);
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 5px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .option-card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 5px solid var(--primary-color);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card i {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .option-card h3 {
+            font-size: 1.4rem;
+            color: var(--accent-color);
+        }
+
+        .option-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .open {
+            background-color: #2ecc71;
+        }
+
+        .closed {
+            background-color: #e74c3c;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .warning i {
+            color: #ffc107;
+            margin-right: 10px;
+        }
+
+        .info-section {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .info-section h2 {
+            color: var(--accent-color);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .info-card {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .logo {
+                justify-content: center;
+            }
+
+            .chat-container {
+                height: 400px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-book-reader"></i>
+                    <div>
+                        <h1>Chat<span>Book</span></h1>
+                        <div class="subtitle">Assistente Virtual da Biblioteca IFBA</div>
+                    </div>
+                </div>
+                <div class="current-time" id="current-time"></div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="chat-section">
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <i class="fas fa-robot"></i>
+                        <span>Assistente Virtual</span>
+                    </div>
+                    <div class="chat-messages" id="chat-messages">
+                        <!-- Mensagens serão inseridas aqui via JavaScript -->
+                        <div class="message bot-message">
+                            Olá! Eu sou o ChatBook, assistente virtual da Biblioteca IFBA. Como posso ajudá-lo hoje?
+                        </div>
+                    </div>
+                </div>
+
+                <div class="options-container">
+                    <div class="option-card" data-option="1">
+                        <i class="fas fa-clock"></i>
+                        <h3>Horário de Funcionamento</h3>
+                        <p>Consulte os horários de abertura e fechamento da biblioteca</p>
+                    </div>
+                    <div class="option-card" data-option="2">
+                        <i class="fas fa-book"></i>
+                        <h3>Informações sobre Empréstimos</h3>
+                        <p>Veja prazos e regras para empréstimo de livros</p>
+                    </div>
+                    <div class="option-card" data-option="3">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Livros de Tarja Vermelha</h3>
+                        <p>Regras especiais para livros com tarja vermelha</p>
+                    </div>
+                    <div class="option-card" data-option="4">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <h3>Sair</h3>
+                        <p>Encerrar a sessão com o assistente virtual</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2><i class="fas fa-info-circle"></i> Informações da Biblioteca</h2>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3><i class="fas fa-map-marker-alt"></i> Localização</h3>
+                        <p>Biblioteca Central do IFBA - Campus Salvador</p>
+                        <p>Rua Emídio dos Santos, S/N - Barbalho</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-phone-alt"></i> Contato</h3>
+                        <p>Telefone: (71) 2102-9400</p>
+                        <p>Email: biblioteca@ifba.edu.br</p>
+                    </div>
+                    <div class="info-card">
+                        <h3><i class="fas fa-user-tie"></i> Coordenação</h3>
+                        <p>Responsável: Maria Silva Santos</p>
+                        <p>Horário de atendimento: 8h às 17h</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>ChatBook - Assistente Virtual da Biblioteca IFBA &copy; 2023 - Todos os direitos reservados</p>
+            <p>Este sistema é uma simulação para fins educacionais</p>
+        </div>
+    </footer>
+
+    <script>
+        // Elementos do DOM
+        const chatMessages = document.getElementById('chat-messages');
+        const optionCards = document.querySelectorAll('.option-card');
+        const currentTimeElement = document.getElementById('current-time');
+        
+        // Função para atualizar o horário atual
+        function updateCurrentTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            };
+            currentTimeElement.textContent = now.toLocaleDateString('pt-BR', options);
+        }
+        
+        // Atualizar horário a cada segundo
+        updateCurrentTime();
+        setInterval(updateCurrentTime, 1000);
+        
+        // Função para adicionar mensagem ao chat
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+            messageDiv.textContent = message;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Função para verificar se a biblioteca está aberta
+        function checkLibraryStatus() {
+            const now = new Date();
+            const currentHour = now.getHours();
+            const currentMinute = now.getMinutes();
+            const currentTime = currentHour + currentMinute/60;
+            
+            // Biblioteca funciona das 7:00 às 22:00
+            const openingTime = 7;
+            const closingTime = 22;
+            
+            let statusMessage = "\n[HORÁRIO]: A biblioteca funciona de segunda a sexta, das 07:00 às 22:00.";
+            
+            // Verificar se é fim de semana
+            const isWeekend = now.getDay() === 0 || now.getDay() === 6;
+            
+            if (isWeekend) {
+                statusMessage += "\nHoje é fim de semana. Status Atual: FECHADA.";
+            } else if (currentTime >= openingTime && currentTime <= closingTime) {
+                statusMessage += "\nStatus Atual: ABERTA agora.";
+            } else {
+                statusMessage += "\nStatus Atual: FECHADA agora.";
+            }
+            
+            return statusMessage;
+        }
+        
+        // Função para processar a opção selecionada
+        function processOption(option) {
+            let response = "";
+            
+            switch(option) {
+                case '1':
+                    response = checkLibraryStatus();
+                    break;
+                case '2':
+                    response = "\n[EMPRÉSTIMO]: O prazo padrão para livros do acervo geral é de 7 dias úteis.\n\nRenovações: É possível renovar o empréstimo por mais 7 dias, desde que não haja reservas para o livro.\n\nMultas: Atrasos na devolução resultam em multa de R$ 2,00 por dia por livro.";
+                    break;
+                case '3':
+                    response = "\n[TARJA VERMELHA]: Atenção! Livros com tarja vermelha são apenas para CONSULTA LOCAL.\n\nNão é permitido o empréstimo domiciliar destes exemplares.\n\nEstes livros incluem: obras raras, edições especiais, livros de referência e teses.\n\nDisponíveis para consulta no horário normal de funcionamento.";
+                    break;
+                case '4':
+                    response = "Obrigado por utilizar o ChatBook! Esperamos vê-lo novamente em breve. Até logo!";
+                    break;
+                default:
+                    response = "Opção inválida. Por favor, selecione uma opção entre 1 e 4.";
+            }
+            
+            return response;
+        }
+        
+        // Adicionar eventos de clique às opções
+        optionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                const option = this.getAttribute('data-option');
+                
+                // Adicionar mensagem do usuário
+                let userMessage = "";
+                switch(option) {
+                    case '1': userMessage = "Consultar Horário de Funcionamento"; break;
+                    case '2': userMessage = "Informações sobre Empréstimos"; break;
+                    case '3': userMessage = "Regra para Livros de Tarja Vermelha"; break;
+                    case '4': userMessage = "Sair"; break;
+                }
+                addMessage(userMessage, true);
+                
+                // Processar após um pequeno delay para simular processamento
+                setTimeout(() => {
+                    const response = processOption(option);
+                    addMessage(response);
+                    
+                    // Se for a opção 4 (Sair), desativar as opções após 2 segundos
+                    if (option === '4') {
+                        setTimeout(() => {
+                            optionCards.forEach(card => {
+                                card.style.opacity = '0.5';
+                                card.style.pointerEvents = 'none';
+                                card.style.cursor = 'not-allowed';
+                            });
+                            addMessage("Sessão encerrada. Recarregue a página para reiniciar.");
+                        }, 2000);
+                    }
+                }, 500);
+            });
+        });
+        
+        // Adicionar mensagem inicial do bot após carregamento
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                addMessage("Por favor, selecione uma das opções abaixo para obter informações.");
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
